@@ -6,6 +6,7 @@ services:
       context: .
       target: api
     restart: unless-stopped
+    networks: [currencyrates]
     links:
       - chromium
     environment:
@@ -18,6 +19,7 @@ services:
       context: .
       target: nginx
     restart: unless-stopped
+    networks: [proxy, currencyrates]
     depends_on:
       - api
     labels:
@@ -36,7 +38,14 @@ services:
   chromium:
     container_name: chromium
     image: "zenika/alpine-chrome:latest"
+    networks: [currencyrates]
     restart: unless-stopped
     cap_add:
       - SYS_ADMIN
     command: [ chromium-browser, --headless, --disable-gpu, --no-sandbox, --remote-debugging-port=9222, --remote-debugging-address=0.0.0.0, about:blank ]
+
+networks:
+  currencyrates:
+    external: false
+  proxy:
+    external: true
