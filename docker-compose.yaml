@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  api:
+    build:
+      context: .
+      target: api
+    restart: unless-stopped
+    links:
+      - chromium
+    environment:
+      CHROMIUM_URL: http://chromium:9222
+    depends_on:
+      - chromium
+
+  nginx:
+    build:
+      context: .
+      target: nginx
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "80:80"
+
+  chromium:
+    container_name: chromium
+    image: "zenika/alpine-chrome:latest"
+    restart: unless-stopped
+    cap_add:
+      - SYS_ADMIN
+    command: [ chromium-browser, --headless, --disable-gpu, --no-sandbox, --remote-debugging-port=9222, --remote-debugging-address=0.0.0.0, about:blank ]
