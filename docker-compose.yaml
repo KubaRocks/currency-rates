@@ -20,8 +20,6 @@ services:
     restart: unless-stopped
     depends_on:
       - api
-    ports:
-      - "80:80"
     labels:
       traefik.enable: true
       traefik.http.routers.currencytracker.entrypoints: http
