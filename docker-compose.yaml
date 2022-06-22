@@ -40,14 +40,15 @@ services:
       traefik.docker.network: proxy
 
   chromium:
+    build:
+      context: .
+      target: chromium
     container_name: chromium
-    image: "zenika/alpine-chrome:latest"
     networks: [currencyrates]
     restart: unless-stopped
     healthcheck:
       test: curl --fail http://localhost:9222/json/version || exit 1
       interval: 10s
-    command: [ chromium-browser, --headless, --disable-gpu, --no-sandbox, --remote-debugging-port=9222, --remote-debugging-address=0.0.0.0, about:blank ]
 
 networks:
   currencyrates:

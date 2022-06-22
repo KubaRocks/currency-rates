@@ -1,3 +1,7 @@
+FROM zenika/alpine-chrome:latest as chromium
+RUN apk add --no-cache --virtual curl
+CMD [ "chromium-browser", "--headless", "--disable-gpu", "--no-sandbox", "--remote-debugging-port=9222", "--remote-debugging-address=0.0.0.0", "about:blank" ]
+
 FROM node:16-alpine as api
 WORKDIR /app
 COPY api/package.json api/package-lock.json ./
