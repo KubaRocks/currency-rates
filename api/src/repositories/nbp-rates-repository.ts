@@ -1,6 +1,6 @@
 import 'isomorphic-fetch';
 import NodeCache from "node-cache";
-import { formatDayDate, getSecondsUntilTheEndOfTheDay } from "../helpers/dates";
+import { getSecondsUntilTheEndOfTheDay, getYesterdayButWeekday } from "../helpers/dates";
 import { ExternalRate, ExternalRatesRepository } from "types";
 
 interface ApiRate {
@@ -14,13 +14,13 @@ export function NbpRatesRepository(cache: NodeCache): ExternalRatesRepository {
   const ttl = getSecondsUntilTheEndOfTheDay();
 
   async function findAll(): Promise<ExternalRate[]> {
-    const cacheKey = `nbp-${formatDayDate(new Date())}`;
+    const cacheKey = `nbp-${getYesterdayButWeekday()}`;
 
     if (cache.has(cacheKey)) {
       return await cache.get(cacheKey)!;
     }
 
-    const data = await performApiCall('tables/A');
+    const data = await performApiCall(`tables/A/${getYesterdayButWeekday()}`);
     const result = data[0].rates.map((rate: ApiRate) => {
       return {
         code: rate.code,

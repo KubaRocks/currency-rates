@@ -19,11 +19,10 @@ export function ForexRatesRepository(cache: NodeCache): ExternalRatesRepository 
     let rates = await scrapeRatesFromPage(page);
     const cacheKey = `forex-${formatDayDate(new Date())}`;
 
-    // check if rates have zero values
-    const filteredZeroRates = rates.filter((rate) => Number(rate) !== 0);
+    if (!rates.every((rate) => Number(rate) !== 0)) {
+      console.log('No rates found for symbols');
+      cache.has(cacheKey) ? console.log('Retrieving rates from cache') : console.log('Recrawling');
 
-    if (filteredZeroRates.length === 0) {
-      console.log('No rates found for symbols - recrawling');
       rates = cache.has(cacheKey)
         ? cache.get(cacheKey)!
         : await scrapeRatesFromPage(page);
