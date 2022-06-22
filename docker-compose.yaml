@@ -46,7 +46,6 @@ services:
     build:
       context: .
       target: chromium
-    container_name: chromium
     networks: [currencyrates]
     restart: unless-stopped
     healthcheck:
