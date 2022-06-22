@@ -37,7 +37,7 @@ export function App() {
           <div key={rate.code}>
             <h2
               className={calculatePercentageChange(rate.nbpRate, rate.forexRate) < 0 ? 'decrease' : 'increase'}>
-              {rate.code} <span>➡</span> {formatMoney(rate.forexRate || rate.nbpRate)}
+              {rate.code} <span>➡</span> {formatMoney(rate.forexRate)}
             </h2>
           </div>
         ))}
