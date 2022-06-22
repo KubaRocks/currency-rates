@@ -36,15 +36,17 @@ body {
   color: #38c038;
 }
 
-.increase span {
-  transform: rotate(-90deg);
-}
-
 .decrease {
   color: rgb(255, 51, 51);
 }
 
+.increase span {
+  display: inline-block;
+  transform: rotate(-90deg);
+}
+
 .decrease span {
+  display: inline-block;
   transform: rotate(90deg);
 }
 
