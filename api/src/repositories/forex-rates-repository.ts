@@ -20,8 +20,8 @@ export function ForexRatesRepository(cache: NodeCache): ExternalRatesRepository 
     const cacheKey = `forex-${formatDayDate(new Date())}`;
 
     if (!rates.every((rate) => Number(rate) !== 0)) {
-      console.log('No rates found for symbols');
-      cache.has(cacheKey) ? console.log('Retrieving rates from cache') : console.log('Recrawling');
+      console.log('[forex] - No rates found for symbols');
+      cache.has(cacheKey) ? console.log('[forex] - Retrieving rates from cache') : console.log('[forex] - Recrawling');
 
       rates = cache.has(cacheKey)
         ? cache.get(cacheKey)!

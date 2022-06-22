@@ -17,9 +17,11 @@ export function NbpRatesRepository(cache: NodeCache): ExternalRatesRepository {
     const cacheKey = `nbp-${getYesterdayButWeekday()}`;
 
     if (cache.has(cacheKey)) {
+      console.log('[nbp] - Retrieving rates from cache');
       return await cache.get(cacheKey)!;
     }
 
+    console.log('[nbp] - Retrieving rates from API');
     const data = await performApiCall(`tables/A/${getYesterdayButWeekday()}`);
     const result = data[0].rates.map((rate: ApiRate) => {
       return {
