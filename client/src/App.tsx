@@ -3,12 +3,8 @@ import logo from './logo.svg';
 import './App.css';
 import { formatMoney } from "./helpers/formatters";
 import { calculatePercentageChange } from "./helpers/changeCalculator";
-
-interface Rate {
-  code: string;
-  nbpRate: number;
-  forexRate: number;
-}
+import { Rate } from "./types";
+import { validateRateResponse } from "./helpers/validators";
 
 export function App() {
   const [ rates, setRates ] = useState<Rate[]>([]);
@@ -17,7 +13,10 @@ export function App() {
     const fetchData = async () => {
       const response = await fetch(`${process.env.API_URL || ''}/api/rates/USD,EUR`);
       const data = await response.json();
-      setRates(data);
+
+      if (validateRateResponse(data)) {
+        setRates(data);
+      }
     };
     fetchData();
 
