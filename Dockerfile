@@ -1,16 +1,8 @@
 FROM zenika/alpine-chrome:latest as chromium
-USER root
-RUN apk upgrade --no-cache --available \
-    && apk add --no-cache \
-    curl
-USER chrome
 CMD [ "chromium-browser", "--headless", "--disable-gpu", "--no-sandbox", "--remote-debugging-port=9222", "--remote-debugging-address=0.0.0.0", "about:blank" ]
 
 FROM node:16-alpine as api
 WORKDIR /app
-RUN apk upgrade --no-cache --available \
-    && apk add --no-cache \
-    curl
 COPY api/package.json api/package-lock.json ./
 ENV PUPPETEER_SKIP_DOWNLOAD=true
 RUN npm install
