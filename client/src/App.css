@@ -32,16 +32,20 @@ body {
   font-weight: lighter;
 }
 
+h2 {
+  transition: color .8s ease-in-out;
+}
+
 .increase {
   color: #38c038;
 }
 
 .decrease {
-  color: rgb(255, 51, 51);
+  color: #FF3333FF;
 }
 
 h2 span {
-  transition: color .8s ease-in-out, transform .8s ease-in-out;
+  transition: transform .8s ease-in-out;
 }
 
 .increase span {
