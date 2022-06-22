@@ -13,7 +13,7 @@ export function getSecondsUntilTheEndOfTheDay(): number {
 
 export function getYesterdayButWeekday(): string {
   const format = 'YYYY-MM-DD';
-  let yesterday = dayjs('yesterday');
+  let yesterday = dayjs().subtract(1, 'day');
   // sunday
   if (yesterday.day() === 0) {
     return yesterday.subtract(2, 'day').format(format);
