@@ -1,5 +1,7 @@
 import dayjs from "dayjs";
 
+export const FORMAT_NBP = 'YYYY-MM-DD';
+
 export function formatDayDate(date: Date): string {
   return dayjs(date).format('YYYYMMDD');
 }
@@ -11,18 +13,17 @@ export function getSecondsUntilTheEndOfTheDay(): number {
   return endOfDay.getTime() - now.getTime();
 }
 
-export function getYesterdayButWeekday(): string {
-  const format = 'YYYY-MM-DD';
+export function getYesterdayButWeekday() {
   let yesterday = dayjs().subtract(1, 'day');
   // sunday
   if (yesterday.day() === 0) {
-    return yesterday.subtract(2, 'day').format(format);
+    return yesterday.subtract(2, 'day');
   }
   // saturday
   if (yesterday.day() === 6) {
-    return yesterday.subtract(1, 'day').format(format);
+    return yesterday.subtract(1, 'day');
   }
 
-  return yesterday.format(format);
+  return yesterday;
 }
 

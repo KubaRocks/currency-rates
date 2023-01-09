@@ -1,6 +1,6 @@
 import 'isomorphic-fetch';
 import NodeCache from "node-cache";
-import { getSecondsUntilTheEndOfTheDay, getYesterdayButWeekday } from "../helpers/dates";
+import { FORMAT_NBP, getSecondsUntilTheEndOfTheDay, getYesterdayButWeekday } from "../helpers/dates";
 import { ExternalRate, ExternalRatesRepository } from "types";
 
 interface ApiRate {
@@ -14,7 +14,8 @@ export function NbpRatesRepository(cache: NodeCache): ExternalRatesRepository {
   const ttl = getSecondsUntilTheEndOfTheDay();
 
   async function findAll(): Promise<ExternalRate[]> {
-    const cacheKey = `nbp-${getYesterdayButWeekday()}`;
+    const date = getYesterdayButWeekday();
+    const cacheKey = `nbp-${date.format(FORMAT_NBP)}`;
 
     if (cache.has(cacheKey)) {
       console.log('[nbp] - Retrieving rates from cache');
@@ -22,7 +23,14 @@ export function NbpRatesRepository(cache: NodeCache): ExternalRatesRepository {
     }
 
     console.log('[nbp] - Retrieving rates from API');
-    const data = await performApiCall(`tables/A/${getYesterdayButWeekday()}`);
+    let data: any;
+    let daysToSubtract = 1;
+
+    do {
+      data = await performApiCall(`tables/A/${date.subtract(daysToSubtract, 'day').format(FORMAT_NBP)}`);
+      daysToSubtract++;
+    } while(data.length === 0)
+
     const result = data[0].rates.map((rate: ApiRate) => {
       return {
         code: rate.code,
@@ -44,6 +52,12 @@ export function NbpRatesRepository(cache: NodeCache): ExternalRatesRepository {
   async function performApiCall(endpoint: string): Promise<any> {
     const url = `${baseURL}/${endpoint}?format=json`;
     const response = await fetch(url);
+
+    if (!response.ok) {
+      console.log(`[nbp] - API responded with ${response.status}`);
+      return [];
+    }
+
 
     return await response.json();
   }
