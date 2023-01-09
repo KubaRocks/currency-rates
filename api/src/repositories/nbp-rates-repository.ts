@@ -51,15 +51,21 @@ export function NbpRatesRepository(cache: NodeCache): ExternalRatesRepository {
 
   async function performApiCall(endpoint: string): Promise<any> {
     const url = `${baseURL}/${endpoint}?format=json`;
-    const response = await fetch(url);
 
-    if (!response.ok) {
-      console.log(`[nbp] - API responded with ${response.status}`);
-      return [];
+    try {
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        console.log(`[nbp] - API responded with ${response.status}`);
+        return [];
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.log(`[nbp] - API call failed: ${error}`);
     }
 
-
-    return await response.json();
+    return [];
   }
 
   return { findBySymbols };
