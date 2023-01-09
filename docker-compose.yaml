@@ -17,6 +17,10 @@ services:
     depends_on:
       chromium:
         condition: service_healthy
+    logging:
+      options:
+        max-size: "2m"
+        max-file: "3"
 
   nginx:
     build:
@@ -29,6 +33,10 @@ services:
         condition: service_healthy
       api:
         condition: service_healthy
+    logging:
+      options:
+        max-size: "2m"
+        max-file: "3"
     labels:
       traefik.enable: true
       traefik.http.routers.currencytracker.entrypoints: http
@@ -51,6 +59,10 @@ services:
     healthcheck:
       test: wget --no-verbose --tries=1 --spider http://localhost:9222/json/version || exit 1
       interval: 3s
+    logging:
+      options:
+        max-size: "2m"
+        max-file: "3"
 
 networks:
   currencyrates:
