@@ -2,6 +2,7 @@ import 'isomorphic-fetch';
 import NodeCache from "node-cache";
 import { FORMAT_NBP, getSecondsUntilTheEndOfTheDay, getYesterdayButWeekday } from "../helpers/dates";
 import { ExternalRate, ExternalRatesRepository } from "types";
+import { Logger } from "../logger";
 
 interface ApiRate {
   currency: string;
@@ -18,11 +19,11 @@ export function NbpRatesRepository(cache: NodeCache): ExternalRatesRepository {
     const cacheKey = `nbp-${date.format(FORMAT_NBP)}`;
 
     if (cache.has(cacheKey)) {
-      console.log('[nbp] - Retrieving rates from cache');
+      Logger.info('[nbp] - Retrieving rates from cache');
       return await cache.get(cacheKey)!;
     }
 
-    console.log('[nbp] - Retrieving rates from API');
+    Logger.info('[nbp] - Retrieving rates from API');
     let data: any;
     let daysToSubtract = 1;
 
@@ -56,13 +57,13 @@ export function NbpRatesRepository(cache: NodeCache): ExternalRatesRepository {
       const response = await fetch(url);
 
       if (!response.ok) {
-        console.log(`[nbp] - API responded with ${response.status}`);
+        Logger.error(`[nbp] - API responded with ${response.status}`);
         return [];
       }
 
       return await response.json();
     } catch (error) {
-      console.log(`[nbp] - API call failed: ${error}`);
+      Logger.error(`[nbp] - API call failed: ${error}`);
     }
 
     return [];

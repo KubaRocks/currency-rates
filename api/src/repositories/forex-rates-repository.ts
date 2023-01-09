@@ -4,6 +4,7 @@ import NodeCache from "node-cache";
 const dns = require('dns').promises;
 import { ExternalRate, ExternalRatesRepository } from "types";
 import { formatDayDate, getSecondsUntilTheEndOfTheDay } from "../helpers/dates";
+import { Logger } from "../logger";
 
 export function ForexRatesRepository(cache: NodeCache): ExternalRatesRepository {
   const baseUrl = 'https://s.tradingview.com/embed-widget/tickers/?locale=en#';
@@ -20,8 +21,10 @@ export function ForexRatesRepository(cache: NodeCache): ExternalRatesRepository 
     const cacheKey = `forex-${formatDayDate(new Date())}`;
 
     if (!rates.every((rate) => Number(rate) !== 0)) {
-      console.log('[forex] - No rates found for symbols');
-      cache.has(cacheKey) ? console.log('[forex] - Retrieving rates from cache') : console.log('[forex] - Recrawling');
+      Logger.error('[forex] - No rates found for symbols');
+      cache.has(cacheKey)
+        ? Logger.info('[forex] - Retrieving rates from cache')
+        : Logger.info('[forex] - Recrawling');
 
       rates = cache.has(cacheKey)
         ? cache.get(cacheKey)!

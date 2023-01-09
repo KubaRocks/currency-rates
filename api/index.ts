@@ -2,6 +2,7 @@ import express, { Express } from 'express';
 import dotenv from 'dotenv';
 import { rates } from "./src/routes/rates";
 import NodeCache from "node-cache";
+import { Logger } from "./src/logger";
 
 dotenv.config();
 
@@ -20,5 +21,5 @@ app.get('/rates/:symbols', (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`⚡️[server]: Server is running at https://localhost:${port}`);
+  Logger.info(`⚡️[server]: Server is running at https://localhost:${port}`);
 });
