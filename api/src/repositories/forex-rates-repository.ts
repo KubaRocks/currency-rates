@@ -14,35 +14,43 @@ export function ForexRatesRepository(cache: NodeCache): ExternalRatesRepository 
     const page = await browser.newPage();
     const url = `${baseUrl}${encodeURIComponent(JSON.stringify(generateConfig(symbols)))}`;
 
+    Logger.info('[forex] - Retrieving rates from API')
+
     await page.goto(url, { waitUntil: 'networkidle2' });
-    await page.waitForSelector('.js-symbol-last');
+    try {
+      await page.waitForSelector('.js-symbol-last');
 
-    let rates = await scrapeRatesFromPage(page);
-    const cacheKey = `forex-${formatDayDate(new Date())}`;
+      let rates = await scrapeRatesFromPage(page);
+      const cacheKey = `forex-${formatDayDate(new Date())}`;
 
-    if (!rates.every((rate) => Number(rate) !== 0)) {
-      Logger.error('[forex] - No rates found for symbols');
-      cache.has(cacheKey)
-        ? Logger.info('[forex] - Retrieving rates from cache')
-        : Logger.info('[forex] - Recrawling');
+      if (!rates.every((rate) => Number(rate) !== 0)) {
+        Logger.error('[forex] - No rates found for symbols');
+        cache.has(cacheKey)
+          ? Logger.info('[forex] - Retrieving rates from cache')
+          : Logger.info('[forex] - Recrawling');
 
-      rates = cache.has(cacheKey)
-        ? cache.get(cacheKey)!
-        : await scrapeRatesFromPage(page);
-    }
-
-    const results = symbols.map((symbol, index) => {
-      return {
-        code: symbol,
-        rate: Number(rates[index]),
+        rates = cache.has(cacheKey)
+          ? cache.get(cacheKey)!
+          : await scrapeRatesFromPage(page);
       }
-    });
 
-    cache.set(cacheKey, results, getSecondsUntilTheEndOfTheDay());
+      const results = symbols.map((symbol, index) => {
+        return {
+          code: symbol,
+          rate: Number(rates[index]),
+        }
+      });
 
-    await page.close();
+      cache.set(cacheKey, results, getSecondsUntilTheEndOfTheDay());
 
-    return results;
+      await page.close();
+
+      return results;
+    } catch (e) {
+      Logger.error('[forex] - Error while scraping rates', e);
+      await page.close();
+      return [];
+    }
   }
 
   function scrapeRatesFromPage(page: Page) {
