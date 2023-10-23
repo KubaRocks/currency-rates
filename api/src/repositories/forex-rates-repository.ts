@@ -47,7 +47,7 @@ export function ForexRatesRepository(cache: NodeCache): ExternalRatesRepository 
 
       return results;
     } catch (e) {
-      Logger.error('[forex] - Error while scraping rates', e);
+      Logger.error('🔥 [forex] - Error while scraping rates', e);
       await page.close();
       return [];
     }
