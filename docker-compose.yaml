@@ -21,7 +21,6 @@ services:
         max-file: "3"
     labels:
       traefik.docker.network: coolify
-      traefik.http.services.app.loadbalancer.server.port: 3000
 
   chromium:
     build:
