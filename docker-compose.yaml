@@ -1,42 +1,22 @@
 services:
-  api:
+  app:
     build:
       context: .
-      target: api
+      target: app
     restart: unless-stopped
-    networks: [currencyrates]
-    links:
-      - chromium
+    ports:
+      - "${APP_PORT:-3000}:3000"
     environment:
       CHROMIUM_URL: http://chromium:9222
+      TZ: Europe/Warsaw
+    depends_on:
+      chromium:
+        condition: service_healthy
     healthcheck:
-      test: wget --no-verbose --tries=1 --spider http://localhost:3001/ || exit 1
-      interval: 1s
-    depends_on:
-      chromium:
-        condition: service_healthy
-    logging:
-      options:
-        max-size: "2m"
-        max-file: "3"
-    deploy:
-      resources:
-        limits:
-          memory: 512M
-      restart_policy:
-        condition: on-failure
-
-  nginx:
-    build:
-      context: .
-      target: nginx
-    restart: unless-stopped
-    networks: [currencyrates]
-    depends_on:
-      chromium:
-        condition: service_healthy
-      api:
-        condition: service_healthy
+      test: wget --no-verbose --tries=1 --spider http://127.0.0.1:3000/ || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 3
     logging:
       options:
         max-size: "2m"
@@ -48,22 +28,13 @@ services:
     build:
       context: .
       target: chromium
-    networks: [currencyrates]
     restart: unless-stopped
     healthcheck:
       test: wget --no-verbose --tries=1 --spider http://127.0.0.1:9222/json/version || exit 1
-      interval: 3s
+      interval: 10s
+      timeout: 5s
+      retries: 3
     logging:
       options:
         max-size: "2m"
         max-file: "3"
-    deploy:
-      resources:
-        limits:
-          memory: 4G
-      restart_policy:
-        condition: on-failure
-
-networks:
-  currencyrates:
-    external: false
