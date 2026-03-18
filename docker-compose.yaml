@@ -4,8 +4,6 @@ services:
       context: .
       target: app
     restart: unless-stopped
-    ports:
-      - "${APP_PORT:-3000}:3000"
     environment:
       CHROMIUM_URL: http://chromium:9222
       TZ: Europe/Warsaw
