@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: dark;
+  --background: #000000;
+  --foreground: #f7f2ff;
+  --tone-up: #49f6ff;
+  --tone-down: #ff4b4b;
+  --tone-flat: #f7f2ff;
+  --tone-dim: #6a5b76;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-display), sans-serif;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+.screen-shell {
+  min-height: 100vh;
+  width: 100%;
+}
+
+.rate-tone-up {
+  color: var(--tone-up);
+  text-shadow: 0 0 10px rgba(73, 246, 255, 0.28);
+}
+
+.rate-tone-down {
+  color: var(--tone-down);
+  text-shadow: 0 0 10px rgba(255, 75, 75, 0.24);
+}
+
+.rate-tone-flat {
+  color: var(--tone-flat);
+}
+
+.rate-tone-dim {
+  color: var(--tone-dim);
+}
