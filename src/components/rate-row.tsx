@@ -1,5 +1,6 @@
 import { calculatePercentageChange, getTrendDirection } from '@/lib/helpers/change-calculator';
 import { formatMoney, formatPercentage } from '@/lib/helpers/formatters';
+import { RollingRate } from '@/components/rolling-rate';
 import type { Rate } from '@/types';
 
 interface RateRowProps {
@@ -21,7 +22,7 @@ export function RateRow({ code, rate }: RateRowProps) {
     flat: '→',
   }[direction];
 
-  const formattedRate = rate ? formatMoney(rate.forexRate) : '--,---- zł';
+  const formattedRate = rate ? formatMoney(rate.forexRate) : null;
   const spread = rate ? formatPercentage(calculatePercentageChange(rate.nbpRate, rate.forexRate)) : '--';
 
   return (
@@ -33,7 +34,7 @@ export function RateRow({ code, rate }: RateRowProps) {
         <span className="pb-[0.08em] text-[clamp(2.95rem,10.8vh,5.15rem)] font-semibold">{arrow}</span>
         <div className="flex items-end gap-x-[clamp(4px,0.75vw,10px)]">
           <span className="text-[clamp(4.5rem,16.6vh,7.8rem)] font-semibold tabular-nums tracking-[0.015em]">
-            {formattedRate}
+            <RollingRate value={formattedRate} />
           </span>
           <span className="pb-[0.5em] text-[clamp(0.9rem,2.9vh,1.3rem)] font-medium tracking-[0.025em] opacity-88">
             {spread}
