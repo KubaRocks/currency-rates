@@ -26,17 +26,19 @@ export function RateRow({ code, rate }: RateRowProps) {
 
   return (
     <section className={`transition-colors duration-300 ${toneClass}`}>
-      <div className="grid grid-cols-[max-content_max-content_1fr_max-content] items-end gap-x-[clamp(10px,1.4vw,18px)] leading-none">
-        <span className="min-w-[3.1ch] text-[clamp(3rem,11.4vh,5.6rem)] font-semibold tracking-[0.04em]">
+      <div className="grid grid-cols-[max-content_max-content_auto] items-end gap-x-[clamp(10px,1.2vw,16px)] leading-[0.88]">
+        <span className="min-w-[3.05ch] text-[clamp(3.55rem,13vh,6.25rem)] font-semibold tracking-[0.04em]">
           {code}
         </span>
-        <span className="pb-[0.12em] text-[clamp(2.45rem,9.2vh,4.6rem)] font-semibold">{arrow}</span>
-        <span className="text-[clamp(3.15rem,12.2vh,6rem)] font-semibold tabular-nums tracking-[0.02em]">
-          {formattedRate}
-        </span>
-        <span className="self-end pb-[0.72em] text-[clamp(0.78rem,2.8vh,1.2rem)] font-medium tracking-[0.03em] opacity-85">
-          {spread}
-        </span>
+        <span className="pb-[0.08em] text-[clamp(2.8rem,10.4vh,5rem)] font-semibold">{arrow}</span>
+        <div className="flex items-end gap-x-[clamp(4px,0.75vw,10px)]">
+          <span className="text-[clamp(4rem,15vh,7rem)] font-semibold tabular-nums tracking-[0.015em]">
+            {formattedRate}
+          </span>
+          <span className="pb-[0.5em] text-[clamp(0.9rem,2.9vh,1.3rem)] font-medium tracking-[0.025em] opacity-88">
+            {spread}
+          </span>
+        </div>
       </div>
     </section>
   );

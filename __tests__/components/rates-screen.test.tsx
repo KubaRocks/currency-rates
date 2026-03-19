@@ -8,6 +8,14 @@ describe('RatesScreen', () => {
 
     expect(markup).toContain('items-center');
     expect(markup).toContain('justify-center');
-    expect(markup).toContain('max-w-[820px]');
+    expect(markup).toContain('max-w-[940px]');
+  });
+
+  it('anchors the live status in the bottom-left safe corner', () => {
+    const markup = renderToStaticMarkup(<RatesScreen />);
+
+    expect(markup).toContain('absolute');
+    expect(markup).toContain('bottom-[clamp(');
+    expect(markup).toContain('left-[clamp(');
   });
 });

@@ -2,6 +2,7 @@
 
 import { startTransition, useEffect, useEffectEvent, useRef, useState } from 'react';
 import { RateRow } from '@/components/rate-row';
+import { startPolling } from '@/lib/helpers/polling';
 import { getStatusLabel } from '@/lib/helpers/status';
 import { validateRatesResponse } from '@/lib/helpers/validators';
 import type { CurrencyCode, RatesResponse, VersionResponse } from '@/types';
@@ -72,32 +73,26 @@ export function RatesScreen() {
   });
 
   useEffect(() => {
-    void refreshRates();
-    void refreshVersion();
-
-    const ratesIntervalId = window.setInterval(() => {
-      void refreshRates();
-    }, POLL_INTERVAL_MS);
-    const versionIntervalId = window.setInterval(() => {
-      void refreshVersion();
-    }, VERSION_POLL_INTERVAL_MS);
-
-    return () => {
-      window.clearInterval(ratesIntervalId);
-      window.clearInterval(versionIntervalId);
-    };
-  }, [refreshRates, refreshVersion]);
+    return startPolling({
+      refreshRates,
+      refreshVersion,
+      ratesIntervalMs: POLL_INTERVAL_MS,
+      versionIntervalMs: VERSION_POLL_INTERVAL_MS,
+    });
+  }, []);
 
   const ratesByCode = new Map(payload?.rates.map((rate) => [rate.code, rate]) ?? []);
 
   return (
-    <main className="screen-shell flex items-center justify-center overflow-hidden px-[clamp(16px,2.4vw,26px)] py-[clamp(18px,4.4vh,34px)]">
-      <div className="flex w-full max-w-[820px] flex-col justify-center gap-[clamp(20px,6.2vh,46px)]">
-        {DISPLAY_CODES.map((code) => (
-          <RateRow key={code} code={code} rate={ratesByCode.get(code)} />
-        ))}
+    <main className="screen-shell flex items-center justify-center overflow-hidden px-[clamp(18px,3vw,34px)] py-[clamp(20px,5vh,40px)]">
+      <div className="relative flex min-h-[min(78vh,460px)] w-full max-w-[940px] flex-col justify-center pl-[clamp(10px,1.2vw,16px)]">
+        <div className="flex flex-col gap-[clamp(28px,8.8vh,70px)] pr-[clamp(6px,0.9vw,14px)]">
+          {DISPLAY_CODES.map((code) => (
+            <RateRow key={code} code={code} rate={ratesByCode.get(code)} />
+          ))}
+        </div>
 
-        <footer className="pt-[clamp(6px,2.1vh,16px)] pl-[clamp(4px,0.4vw,8px)] text-[clamp(0.78rem,2.5vh,1.02rem)] tracking-[0.03em] text-white/78">
+        <footer className="absolute bottom-[clamp(8px,2.8vh,20px)] left-[clamp(10px,1.2vw,16px)] text-[clamp(0.82rem,2.4vh,1.08rem)] tracking-[0.03em] text-white/80">
           {didAttemptLoad ? getStatusLabel(payload?.stale ?? false, payload?.updatedAt ?? null) : 'LOADING'}
         </footer>
       </div>

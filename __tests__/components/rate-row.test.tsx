@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { RateRow } from '@/components/rate-row';
 
 describe('RateRow', () => {
-  it('renders the rate and spread in a fixed four-column display row', () => {
+  it('renders the rate and spread in a compact inline rate group', () => {
     const markup = renderToStaticMarkup(
       <RateRow
         code="USD"
@@ -20,6 +20,7 @@ describe('RateRow', () => {
     expect(markup).toContain('4,0500');
     expect(markup).toContain('zł');
     expect(markup).toContain('1,25%');
-    expect(markup).toContain('grid-cols-[');
+    expect(markup).toContain('gap-x-[clamp(4px,0.75vw,10px)]');
+    expect(markup).toContain('text-[clamp(4rem,15vh,7rem)]');
   });
 });

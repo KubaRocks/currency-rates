@@ -35,6 +35,38 @@ export function getNextVersion(currentVersion: string | null | undefined, date: 
   return `${todayPrefix}.${releaseNumber + 1}`;
 }
 
+export function getNextVersionFromVersions(versions: string[], date: Date = new Date()): string {
+  const todayPrefix = getTodayVersionPrefix(date);
+  const todaysVersions = versions
+    .map(normalizeVersion)
+    .filter((version) => version === todayPrefix || version.startsWith(`${todayPrefix}.`));
+
+  if (todaysVersions.length === 0) {
+    return todayPrefix;
+  }
+
+  let highestReleaseNumber = 1;
+
+  for (const version of todaysVersions) {
+    if (version === todayPrefix) {
+      highestReleaseNumber = Math.max(highestReleaseNumber, 1);
+      continue;
+    }
+
+    const suffix = Number(version.slice(todayPrefix.length + 1));
+
+    if (Number.isFinite(suffix)) {
+      highestReleaseNumber = Math.max(highestReleaseNumber, suffix);
+    }
+  }
+
+  if (highestReleaseNumber === 1) {
+    return `${todayPrefix}.2`;
+  }
+
+  return `${todayPrefix}.${highestReleaseNumber + 1}`;
+}
+
 export async function readVersionFile(filePath: string = path.join(process.cwd(), 'VERSION')): Promise<string> {
   const version = normalizeVersion(await readFile(filePath, 'utf8'));
 

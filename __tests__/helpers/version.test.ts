@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  getNextVersionFromVersions,
   getTodayVersionPrefix,
   getNextVersion,
   normalizeVersion,
@@ -24,5 +25,35 @@ describe('version helpers', () => {
 
   it('increments the release suffix for later releases on the same day', () => {
     expect(getNextVersion('v2026.03.19.2', new Date('2026-03-19T10:00:00+01:00'))).toBe('v2026.03.19.3');
+  });
+
+  it('returns the first release of the day when there are no released versions for today', () => {
+    expect(
+      getNextVersionFromVersions(['v2026.03.18', 'v2026.03.18.2'], new Date('2026-03-19T10:00:00+01:00')),
+    ).toBe('v2026.03.19');
+  });
+
+  it('returns the second release of the day when today already has a released base tag', () => {
+    expect(
+      getNextVersionFromVersions(['v2026.03.19'], new Date('2026-03-19T10:00:00+01:00')),
+    ).toBe('v2026.03.19.2');
+  });
+
+  it('increments from the highest released suffix for today', () => {
+    expect(
+      getNextVersionFromVersions(
+        ['v2026.03.19', 'v2026.03.19.2', 'v2026.03.19.4'],
+        new Date('2026-03-19T10:00:00+01:00'),
+      ),
+    ).toBe('v2026.03.19.5');
+  });
+
+  it('ignores non-version release names when computing the next release', () => {
+    expect(
+      getNextVersionFromVersions(
+        ['draft', 'latest', 'v2026.03.19', 'not-a-version', 'v2026.03.19.2'],
+        new Date('2026-03-19T10:00:00+01:00'),
+      ),
+    ).toBe('v2026.03.19.3');
   });
 });

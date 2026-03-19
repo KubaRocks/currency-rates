@@ -9,14 +9,8 @@ version:
 
 next-version:
 	@today="v$$(date +%Y.%m.%d)"; \
-	current="$$(tr -d '\n' < $(VERSION_FILE) 2>/dev/null || true)"; \
-	if [[ "$$current" == "$$today" ]]; then \
-		echo "$$today.2"; \
-	elif [[ "$$current" =~ ^$${today}\.([0-9]+)$$ ]]; then \
-		echo "$$today.$$(( $${BASH_REMATCH[1]} + 1 ))"; \
-	else \
-		echo "$$today"; \
-	fi
+	versions="$$(gh release list --limit 200 --json tagName --jq '.[].tagName' 2>/dev/null | grep -E "^$${today}(\\.[0-9]+)?$$" || true)"; \
+	node scripts/next-version.mjs $$versions
 
 release:
 	@command -v gh >/dev/null || { echo "gh is required"; exit 1; }; \

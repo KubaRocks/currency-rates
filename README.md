@@ -240,7 +240,7 @@ make release
 
 `make release`:
 
-- computes the next version for today
+- queries GitHub releases for today and computes the next version from remote release state
 - updates `VERSION`
 - commits the change
 - pushes the current branch
