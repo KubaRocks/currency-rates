@@ -3,11 +3,11 @@
 :root {
   color-scheme: dark;
   --background: #000000;
-  --foreground: #f7f2ff;
-  --tone-up: #49f6ff;
-  --tone-down: #ff4b4b;
-  --tone-flat: #f7f2ff;
-  --tone-dim: #6a5b76;
+  --foreground: #f2fbff;
+  --tone-up: #00d6ff;
+  --tone-down: #ff4242;
+  --tone-flat: #f2fbff;
+  --tone-dim: #2d4863;
 }
 
 * {
@@ -24,6 +24,7 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-display), sans-serif;
+  text-rendering: geometricPrecision;
 }
 
 a {
@@ -44,12 +45,16 @@ select {
 
 .rate-tone-up {
   color: var(--tone-up);
-  text-shadow: 0 0 10px rgba(73, 246, 255, 0.28);
+  text-shadow:
+    0 0 10px rgba(0, 214, 255, 0.52),
+    0 0 18px rgba(0, 214, 255, 0.28);
 }
 
 .rate-tone-down {
   color: var(--tone-down);
-  text-shadow: 0 0 10px rgba(255, 75, 75, 0.24);
+  text-shadow:
+    0 0 10px rgba(255, 66, 66, 0.5),
+    0 0 18px rgba(255, 66, 66, 0.25);
 }
 
 .rate-tone-flat {

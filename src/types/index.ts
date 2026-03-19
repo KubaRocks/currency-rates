@@ -27,3 +27,7 @@ export interface RatesResponse {
     forex: SourceStatus;
   };
 }
+
+export interface VersionResponse {
+  version: string;
+}

@@ -6,6 +6,7 @@ The app is now a single Next.js project that serves both:
 
 - the fullscreen UI at `/`
 - the rates API at `/api/rates/USD,EUR`
+- the version endpoint at `/api/version`
 
 It fetches:
 
@@ -102,6 +103,9 @@ pnpm dev
 pnpm test
 pnpm build
 pnpm start
+make version
+make next-version
+make release
 ```
 
 ## API
@@ -140,6 +144,18 @@ Supported symbols are hardcoded to:
 
 If unsupported symbols are requested, the route returns `400`.
 
+### `GET /api/version`
+
+Example response:
+
+```json
+{
+  "version": "v2026.03.19.2"
+}
+```
+
+The Pi client polls this endpoint periodically and performs a full page reload when the reported version changes.
+
 ## Testing
 
 Run the unit test suite:
@@ -156,6 +172,7 @@ The current tests cover:
 - payload validation
 - stale fallback service logic
 - route handler validation
+- versioning helpers and version route
 
 ## Production Build
 
@@ -194,10 +211,38 @@ __tests__/
 public/
 Dockerfile
 docker-compose.yaml
+VERSION
+Makefile
 ```
 
 ## Notes
 
 - The UI is intentionally minimal and optimized for a small attached display.
-- Strong cyan and magenta tones are used because the target panel has weak color reproduction.
+- The display uses deliberately over-saturated cyan and red because the target panel washes colors out.
 - Docker build and runtime verification require a running Docker daemon.
+
+## Releases
+
+The app version lives in the root `VERSION` file.
+
+Format:
+
+- first release of a day: `v2026.03.19`
+- later releases on the same day: `v2026.03.19.2`, `v2026.03.19.3`, and so on
+
+Helpers:
+
+```bash
+make version
+make next-version
+make release
+```
+
+`make release`:
+
+- computes the next version for today
+- updates `VERSION`
+- commits the change
+- pushes the current branch
+- creates and pushes a matching git tag
+- creates a GitHub release with `gh`

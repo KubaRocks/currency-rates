@@ -26,15 +26,15 @@ export function RateRow({ code, rate }: RateRowProps) {
 
   return (
     <section className={`transition-colors duration-300 ${toneClass}`}>
-      <div className="flex items-baseline gap-[clamp(8px,1.2vw,18px)] leading-none">
-        <span className="min-w-[3.3ch] text-[clamp(2.6rem,6.2vw,5.4rem)] font-semibold tracking-[0.05em]">
+      <div className="grid grid-cols-[max-content_max-content_1fr_max-content] items-end gap-x-[clamp(10px,1.4vw,18px)] leading-none">
+        <span className="min-w-[3.1ch] text-[clamp(3rem,11.4vh,5.6rem)] font-semibold tracking-[0.04em]">
           {code}
         </span>
-        <span className="text-[clamp(2.2rem,5.3vw,4.6rem)] font-semibold">{arrow}</span>
-        <span className="text-[clamp(2.5rem,6.8vw,5.8rem)] font-semibold tabular-nums tracking-[0.03em]">
+        <span className="pb-[0.12em] text-[clamp(2.45rem,9.2vh,4.6rem)] font-semibold">{arrow}</span>
+        <span className="text-[clamp(3.15rem,12.2vh,6rem)] font-semibold tabular-nums tracking-[0.02em]">
           {formattedRate}
         </span>
-        <span className="pt-[0.18em] text-[clamp(0.95rem,1.9vw,1.45rem)] font-medium tracking-[0.05em] opacity-80">
+        <span className="self-end pb-[0.72em] text-[clamp(0.78rem,2.8vh,1.2rem)] font-medium tracking-[0.03em] opacity-85">
           {spread}
         </span>
       </div>

@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { RateRow } from '@/components/rate-row';
 
 describe('RateRow', () => {
-  it('renders the rate and spread in a compact single-row layout', () => {
+  it('renders the rate and spread in a fixed four-column display row', () => {
     const markup = renderToStaticMarkup(
       <RateRow
         code="USD"
@@ -20,6 +20,6 @@ describe('RateRow', () => {
     expect(markup).toContain('4,0500');
     expect(markup).toContain('zł');
     expect(markup).toContain('1,25%');
-    expect(markup).not.toContain('SPREAD');
+    expect(markup).toContain('grid-cols-[');
   });
 });
