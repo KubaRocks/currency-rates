@@ -96,7 +96,7 @@ export function RatesScreen() {
   );
 
   return (
-    <main className="screen-shell relative flex items-center justify-center overflow-hidden px-[clamp(18px,3vw,34px)] py-[clamp(20px,5vh,40px)]">
+    <main className="screen-shell relative flex items-center justify-center overflow-hidden px-[clamp(18px,20vw,100px)] py-[clamp(20px,5vh,40px)]">
       <div className="flex min-h-[min(82vh,470px)] w-full max-w-[800px] flex-col justify-center pl-[clamp(10px,1.2vw,16px)] pr-[clamp(10px,1.2vw,16px)]">
         <div className="flex flex-col gap-[clamp(40px,20vh,200px)]">
           {DISPLAY_CODES.map((code) => (
