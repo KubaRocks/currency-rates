@@ -1,25 +1,32 @@
-'use client';
+"use client";
 
-import { startTransition, useEffect, useEffectEvent, useRef, useState } from 'react';
-import { RateRow } from '@/components/rate-row';
-import { startPolling } from '@/lib/helpers/polling';
-import { getStatusLabel } from '@/lib/helpers/status';
-import { validateRatesResponse } from '@/lib/helpers/validators';
-import type { CurrencyCode, RatesResponse, VersionResponse } from '@/types';
+import {
+  startTransition,
+  useEffect,
+  useEffectEvent,
+  useRef,
+  useState,
+} from "react";
+import { RateRow } from "@/components/rate-row";
+import { startPolling } from "@/lib/helpers/polling";
+import { getStatusLabel } from "@/lib/helpers/status";
+import { validateRatesResponse } from "@/lib/helpers/validators";
+import type { CurrencyCode, RatesResponse, VersionResponse } from "@/types";
 
-const DISPLAY_CODES: CurrencyCode[] = ['USD', 'EUR'];
+const DISPLAY_CODES: CurrencyCode[] = ["USD", "EUR"];
 const POLL_INTERVAL_MS = 10_000;
 const VERSION_POLL_INTERVAL_MS = 60_000;
 
 export function RatesScreen() {
   const [payload, setPayload] = useState<RatesResponse | null>(null);
   const [didAttemptLoad, setDidAttemptLoad] = useState(false);
+  const [appVersion, setAppVersion] = useState<string | null>(null);
   const currentVersionRef = useRef<string | null>(null);
 
   const refreshRates = useEffectEvent(async () => {
     try {
-      const response = await fetch('/api/rates/USD,EUR', {
-        cache: 'no-store',
+      const response = await fetch("/api/rates/USD,EUR", {
+        cache: "no-store",
       });
 
       if (!response.ok) {
@@ -29,7 +36,7 @@ export function RatesScreen() {
       const data: unknown = await response.json();
 
       if (!validateRatesResponse(data)) {
-        throw new Error('Rates response did not match the expected payload');
+        throw new Error("Rates response did not match the expected payload");
       }
 
       startTransition(() => {
@@ -45,8 +52,8 @@ export function RatesScreen() {
 
   const refreshVersion = useEffectEvent(async () => {
     try {
-      const response = await fetch('/api/version', {
-        cache: 'no-store',
+      const response = await fetch("/api/version", {
+        cache: "no-store",
       });
 
       if (!response.ok) {
@@ -56,11 +63,14 @@ export function RatesScreen() {
       const data = (await response.json()) as VersionResponse;
 
       if (!data.version) {
-        throw new Error('Version response did not include a version');
+        throw new Error("Version response did not include a version");
       }
 
       if (!currentVersionRef.current) {
         currentVersionRef.current = data.version;
+        startTransition(() => {
+          setAppVersion(data.version);
+        });
         return;
       }
 
@@ -81,21 +91,31 @@ export function RatesScreen() {
     });
   }, []);
 
-  const ratesByCode = new Map(payload?.rates.map((rate) => [rate.code, rate]) ?? []);
+  const ratesByCode = new Map(
+    payload?.rates.map((rate) => [rate.code, rate]) ?? [],
+  );
 
   return (
-    <main className="screen-shell flex items-center justify-center overflow-hidden px-[clamp(18px,3vw,34px)] py-[clamp(20px,5vh,40px)]">
-      <div className="relative flex min-h-[min(78vh,460px)] w-full max-w-[940px] flex-col justify-center pl-[clamp(10px,1.2vw,16px)]">
-        <div className="flex flex-col gap-[clamp(28px,8.8vh,70px)] pr-[clamp(6px,0.9vw,14px)]">
+    <main className="screen-shell relative flex items-center justify-center overflow-hidden px-[clamp(18px,3vw,34px)] py-[clamp(20px,5vh,40px)]">
+      <div className="flex min-h-[min(82vh,470px)] w-full max-w-[800px] flex-col justify-center pl-[clamp(10px,1.2vw,16px)] pr-[clamp(10px,1.2vw,16px)]">
+        <div className="flex flex-col gap-[clamp(40px,20vh,200px)]">
           {DISPLAY_CODES.map((code) => (
             <RateRow key={code} code={code} rate={ratesByCode.get(code)} />
           ))}
         </div>
-
-        <footer className="absolute bottom-[clamp(8px,2.8vh,20px)] left-[clamp(10px,1.2vw,16px)] text-[clamp(0.82rem,2.4vh,1.08rem)] tracking-[0.03em] text-white/80">
-          {didAttemptLoad ? getStatusLabel(payload?.stale ?? false, payload?.updatedAt ?? null) : 'LOADING'}
-        </footer>
       </div>
+
+      <footer className="absolute right-[clamp(28px,3vw,42px)] bottom-[clamp(12px,2vh,18px)] left-[clamp(28px,3vw,42px)] flex items-end justify-between text-[clamp(0.82rem,2.4vh,1.08rem)] tracking-[0.03em] text-white/80">
+        <span>
+          {didAttemptLoad
+            ? getStatusLabel(
+                payload?.stale ?? false,
+                payload?.updatedAt ?? null,
+              )
+            : "LOADING"}
+        </span>
+        <span>{appVersion ?? "v--"}</span>
+      </footer>
     </main>
   );
 }

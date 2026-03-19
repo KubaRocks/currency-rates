@@ -59,6 +59,24 @@ If you want to run the Next app locally while using a separately started Chromiu
 CHROMIUM_URL=http://127.0.0.1:9222 pnpm dev
 ```
 
+For local development with Docker Compose, the override file exposes Chromium on the host as well. That lets you run only the browser container and keep the Next app on your machine:
+
+```bash
+docker compose up chromium
+CHROMIUM_URL=http://127.0.0.1:9222 pnpm dev
+```
+
+You can override the host Chromium port if needed:
+
+```bash
+CHROMIUM_PORT=9333 docker compose up chromium
+CHROMIUM_URL=http://127.0.0.1:9333 pnpm dev
+```
+
+## Pi Display Target
+
+The attached Raspberry Pi display is `800x480`, and UI work should always be evaluated against that target first. Desktop browser previews are useful for iteration, but the primary design constraint for layout, spacing, typography, and safe margins is the `800x480` panel.
+
 ## Run With Docker
 
 Start both the app and the Chromium service:
